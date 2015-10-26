@@ -171,11 +171,11 @@ function run() {
 
         route($m, array('e' => $e, 'c' => $c));
     } else {
-        if (isset($_GET['m'])) {
-            $m = $_GET['m'];
-            unset($_GET['m']);
+        if (isset($_REQUEST['m'])) {
+            $m = $_REQUEST['m'];
+            unset($_REQUEST['m']);
 
-            route($m, $_GET);
+            route($m, $_REQUEST);
         }
     }
 }
