@@ -63,6 +63,15 @@ $config['MAILINGLIST'] = "test@${config['DOMAIN']}";
 $config['FROM'] = "Alan Smith <alan@airpost.net>";
 
 ##
+# Header to include in emails.
+#
+# Can be HTML code or plain text.
+#
+# $config['HEADER'] = "<h1>${config['SITE_NAME']}</h1>";
+##
+$config['HEADER'] = "<h1>${config['SITE_NAME']}</h1>";
+
+##
 # Footer to include in emails.
 #
 # Can be HTML code or plain text.
@@ -74,6 +83,15 @@ $config['FROM'] = "Alan Smith <alan@airpost.net>";
 $config['FOOTER'] = "<br><p style='color: grey'>Location: 1060 West Addison Street Chicago, Illinois 60613</p>";
 
 ##
+# Email content layout.
+#
+# Can be HTML code or plain text.
+#
+# $config['LAYOUT'] = "<html>${config['HEADER']}%content%${config['FOOTER']}</html>";
+##
+$config['LAYOUT'] = "<html>${config['HEADER']}%content%${config['FOOTER']}</html>";
+
+##
 # Email subject to send with subscription confirmation.
 #
 # $config['CONFIRM_SUBJECT'] = "Confirm subscription to ${config['SITE_NAME']}";
@@ -83,7 +101,7 @@ $config['CONFIRM_SUBJECT'] = "Confirm subscription to ${config['SITE_NAME']}";
 ##
 # Email body to send with subscription confirmation.
 #
-# Can be HTML code or plain text. All appearances of "LINK" will
+# Can be HTML code or plain text. All appearances of "%link%" will
 # be replaced by the URL to confirm the subscription.
 #
 # If you don't want to hard code the body, you can grab a
@@ -91,6 +109,22 @@ $config['CONFIRM_SUBJECT'] = "Confirm subscription to ${config['SITE_NAME']}";
 #
 # $config['CONFIRM_BODY'] = file_get_contents("confirm_email.html");
 #
-# $config['CONFIRM_BODY'] = "<h1>${config['SITE_NAME']}</h1><p><a href='LINK'>Confirm your subscription to ${config['SITE_NAME']}.</a></p><p>If you cannot click the above link, copy and paste this URL into your browser:</p><p>LINK</p>";
+# $config['CONFIRM_BODY'] = str_replace('%content%',
+#    "<p><a href='%link%'>Confirm your subscription to ${config['SITE_NAME']}.</a></p><p>If you cannot click the above link, copy and paste this URL into your browser:</p><p>%link%</p>",
+#    $config['LAYOUT']
+# );
 ##
-$config['CONFIRM_BODY'] = "<h1>${config['SITE_NAME']}</h1><p><a href='LINK'>Confirm your subscription to ${config['SITE_NAME']}.</a></p><p>If you cannot click the above link, copy and paste this URL into your browser:</p><p>LINK</p>";
+$config['CONFIRM_BODY'] = str_replace('%content%',
+    "<p><a href='%link%'>Confirm your subscription to ${config['SITE_NAME']}.</a></p><p>If you cannot click the above link, copy and paste this URL into your browser:</p><p>%link%</p>",
+    $config['LAYOUT']
+);
+
+##
+# URL to redirect to after confirming user subscription.
+#
+# This page should say the user completed the subscription
+# process and will now receive emails from the mailinglist.
+#
+# $config['CONFIRM_REDIRECT'] = dirname($_SERVER['PHP_SELF']) . '/confirmed.html';
+##
+$config['CONFIRM_REDIRECT'] = dirname($_SERVER['PHP_SELF']) . '/confirmed.html';

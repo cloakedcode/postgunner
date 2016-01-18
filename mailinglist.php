@@ -35,7 +35,7 @@ function confirm_subscription($email, $doodle) {
             ));
             
             if ($result->http_response_code == 200) {
-                success("User confirmed");
+                success("User confirmed", config('CONFIRM_REDIRECT'));
             } else {
                 failure("Could not add user to the mailinglist");
             }
@@ -57,14 +57,13 @@ function subscribe($email) {
     ));
 
     if (is_email_valid($email)) {
-        $body = str_replace('LINK', $link, config('CONFIRM_BODY'));
-        $footer = config('FOOTER');
+        $body = str_replace('%link%', $link, config('CONFIRM_BODY'));
 
         $result = $mg->sendMessage(config('DOMAIN'), array(
             'from'    => config('FROM'),
             'to'      => $email,
             'subject' => config('CONFIRM_SUBJECT'),
-            'html'    => "<html>${body}${footer}</html>"
+            'html'    => $body
         ));
         
         if ($result->http_response_code == 200) {
@@ -93,7 +92,7 @@ function is_email_valid($email) {
     return ($result->http_response_code == 200 && $result->http_response_body->is_valid === true);
 }
 
-function respond($success, $msg) {
+function respond($success, $msg, $redirect='') {
     if (IS_CLI === true) {
         if (empty($msg) === false) {
             echo "${msg}\n";
@@ -105,16 +104,21 @@ function respond($success, $msg) {
             exit(1);
         }
     } else {
-        die(json_encode(array("success" => $success, "message" => $msg)));
+        if (empty($redirect)) {
+            die(json_encode(array("success" => $success, "message" => $msg)));
+        } else {
+            header("Location: ${redirect}");
+            exit;
+        }
     }
 }
 
-function success($msg) {
-    respond(true, $msg);
+function success($msg, $redirect='') {
+    respond(true, $msg, $redirect);
 }
 
-function failure($msg) {
-    respond(false, $msg);
+function failure($msg, $redirect='') {
+    respond(false, $msg, $redirect);
 }
 
 function hash_it($key) {
